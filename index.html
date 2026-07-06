@@ -29,7 +29,7 @@ button{width:38px;height:38px}.qty{font-size:22px;font-weight:700}
 </div>
 <div id="bar"></div>
 <script>
-const items=[["フォトパンフ",3500,2,false],["ポリうちわ",1300,2,false],["ハンドタオル",1900,2,false],["アクリルスタンド（ランダム全3種）",1400,5,false],["アクリルスタンド（コンプリートセット）",4900,2,false],["ビッグシルエットTシャツ",6000,2,false],["メタリックトート（2way）",3900,2,false],["マルチストラップ",2400,2,false],["ペンライト",5800,2,false],["ハンディファン",5100,2,false],["チケットキーホルダー（東京会場Ver.）",1000,2,false],["【東京ドームコラボ】Tシャツ BLACK",6000,2,true],["【東京ドームコラボ】Tシャツ WHITE",6000,2,true]];
+const items=[["フォトパンフ",3500,2,false],["ポリうちわ",1300,2,false],["ハンドタオル",1900,2,false],["アクリルスタンド（ランダム全3種類）",1400,5,false],["アクリルスタンド（コンプリートセット）",4900,2,false],["ビッグシルエットTシャツ",6000,2,false],["メタリックトート（2way）",3900,2,false],["マルチストラップ",2400,2,false],["ハンディファン",5100,2,false],["ペンライト",5800,2,false],["チケットキーホルダー（東京会場Ver.）",1000,2,false],["【東京ドームコラボ】Tシャツ BLACK",6000,2,true],["【東京ドームコラボ】Tシャツ WHITE",6000,2,true]];
 let qty=Array(items.length).fill(0);const fmt=n=>"¥"+n.toLocaleString();
 function draw(){let l=list;l.innerHTML="";let only=filter.checked,total=0,target=0;
 items.forEach((it,i)=>{total+=qty[i]*it[1];if(!it[3])target+=qty[i]*it[1];if(only&&qty[i]==0)return;let d=document.createElement("div");d.className="card"+(it[3]?" ex":"");d.innerHTML=`<b>${it[0]}</b>${it[3]?'<span class="badge">特典対象外</span>':''}<div class=price>${fmt(it[1])}</div><div class=row><button ${qty[i]==0?'disabled':''} onclick='chg(${i},-1)'>−</button><span class=qty>${qty[i]}</span><button ${qty[i]>=it[2]?'disabled':''} onclick='chg(${i},1)'>＋</button></div>`;l.appendChild(d);});
