@@ -20,10 +20,13 @@
         .price-area { display: flex; align-items: center; }
         .price { font-weight: 700; color: #183153; }
         .row { display: flex; justify-content: space-between; align-items: center; }
-        .qty { width: 34px; height: 34px; border-radius: 17px; background: rgba(255,255,255,.45); display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 800; }
+        .qty-val { font-size: 20px; font-weight: 800; width: 30px; text-align: center; transition: color .2s ease, transform .15s ease; }
+        .qty-zero { color: #666; }
+        .qty-active { color: #000; }
+        .qty-pop { transform: scale(1.12); }
         .qty-btn { width: 44px; height: 44px; border-radius: 50%; border: none; background: rgba(255,255,255,.92); box-shadow: 0 2px 6px rgba(0,0,0,.12), inset 0 1px 0 rgba(255,255,255,.9); color: #333; font-size: 22px; font-weight: 600; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: transform .18s ease, box-shadow .18s ease, background-color .18s ease; }
         .qty-btn:active { transform: scale(.94); box-shadow: inset 0 2px 6px rgba(0,0,0,.15); }
-        .qty-btn:disabled { opacity: .25; transform: scale(.92); }
+        .qty-btn:disabled { opacity: 0.3; }
         .item-link { color: #000; text-decoration: underline; display: inline-flex; align-items: center; gap: 4px; }
         .item-link::after { content: ""; display: inline-block; width: 12px; height: 12px; background: currentColor; -webkit-mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>') no-repeat center; mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>') no-repeat center; }
         .switch-container { display: flex; align-items: center; cursor: pointer; gap: 8px; font-size: 14px; }
@@ -90,14 +93,27 @@
                 if (only && qty[i] == 0) return;
                 let d = document.createElement("div");
                 d.className = "card";
-                d.innerHTML = `<b><a href="${it[4]}" target="_blank" class="item-link">${it[0]}</a></b><div class=row><div class=price-area><div class=price>${fmt(it[1])}</div>${it[3] ? '<span class=badge>特典対象外</span>' : ''}</div><div style="display:flex; align-items:center; gap:8px;"><button class="qty-btn" ${qty[i] == 0 ? 'disabled' : ''} onclick='chg(${i},-1)'>−</button><div class="qty">${qty[i]}</div><button class="qty-btn" ${qty[i] >= it[2] ? 'disabled' : ''} onclick='chg(${i},1)'>＋</button></div></div>`;
+                d.innerHTML = `<b><a href="${it[4]}" target="_blank" class="item-link">${it[0]}</a></b><div class=row><div class=price-area><div class=price>${fmt(it[1])}</div>${it[3] ? '<span class=badge>特典対象外</span>' : ''}</div><div style="display:flex; align-items:center; gap:8px;"><button class="qty-btn" ${qty[i] == 0 ? 'disabled' : ''} onclick='chg(${i},-1)'>−</button><div class="qty-val ${qty[i] == 0 ? 'qty-zero' : 'qty-active'}">${qty[i]}</div><button class="qty-btn" ${qty[i] >= it[2] ? 'disabled' : ''} onclick='chg(${i},1)'>＋</button></div></div>`;
                 l.appendChild(d);
             });
             let t = Math.floor(target / 15000), next = 15000 - target % 15000;
             if (target > 0 && target % 15000 == 0) next = 15000;
             bar.innerHTML = `<div class=bar-left><div class=info-row><div class=info-label><span class=label-text>🎁 特典</span><span>：</span></div><span style="white-space:nowrap">${t}セット</span></div><div class=info-row><div class=info-label><span class=label-text>✨️ 次の特典まであと</span><span>：</span></div><span style="white-space:nowrap">¥${next.toLocaleString()}</span></div></div><div class=bar-right><div class=total-area><div class=total-label>合計</div><div class=total-val>${fmt(total)}</div></div></div>`;
         }
-        function chg(i, d) { qty[i] = Math.max(0, Math.min(items[i][2], qty[i] + d)); localStorage.setItem('goodsQty', JSON.stringify(qty)); draw(); }
+        function chg(i, d) {
+            qty[i] = Math.max(0, Math.min(items[i][2], qty[i] + d));
+            localStorage.setItem('goodsQty', JSON.stringify(qty));
+            draw();
+            requestAnimationFrame(() => {
+                const vals = document.querySelectorAll(".qty-val");
+                if (vals[i]) {
+                    vals[i].classList.add("qty-pop");
+                    setTimeout(() => {
+                        vals[i].classList.remove("qty-pop");
+                    }, 150);
+                }
+            });
+        }
         function resetAll() { qty.fill(0); localStorage.removeItem('goodsQty'); draw(); }
         filter.onchange = draw;
         draw();
