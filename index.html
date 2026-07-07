@@ -13,12 +13,19 @@
         .row { display: flex; justify-content: space-between; align-items: center; }
         .qty-btn { width: 44px; height: 44px; border-radius: 50%; border: none; background: rgba(255,255,255,.92); cursor: pointer; }
         
-        #bar { position: fixed; left: 0; right: 0; bottom: 0; background: #d91e18; color: #fff; height: 70px; display: flex; align-items: center; padding: 0 15px; box-sizing: border-box; }
-        .bar-left { width: 170px; flex-shrink: 0; font-size: 12px; font-weight: bold; }
-        .bar-right { flex-grow: 1; display: flex; justify-content: flex-end; align-items: center; }
+        #bar { 
+            position: fixed; left: 10px; right: 10px; bottom: 10px; 
+            background: #d91e18; color: #fff; height: 70px; 
+            display: grid; grid-template-columns: 1fr auto; align-items: center; 
+            padding: 0 15px; box-sizing: border-box; border-radius: 12px;
+            white-space: nowrap;
+        }
         
-        .total-label { font-size: 14px; font-weight: bold; margin-right: 20px; padding-right: 40px; }
-        .total-val { font-size: 26px; font-weight: 800; width: 140px; text-align: right; }
+        .bar-left { font-size: 11px; font-weight: bold; overflow: hidden; }
+        
+        .bar-right { display: flex; align-items: center; }
+        .total-label { font-size: 14px; font-weight: bold; margin-right: 20px; }
+        .total-val { font-size: 26px; font-weight: 800; text-align: right; width: 140px; }
     </style>
 </head>
 <body>
@@ -58,7 +65,7 @@
                 l.appendChild(d);
             });
             let t = Math.floor(target / 15000), next = 15000 - target % 15000;
-            barInfo.innerHTML = `<div>🎁 特典：${t}セット</div><div>✨️ 次の特典まであと：¥${next.toLocaleString()}</div>`;
+            barInfo.innerHTML = `<div>🎁 特典：${t}セット</div><div>✨️ あと：¥${next.toLocaleString()}</div>`;
             totalVal.innerText = "¥" + total.toLocaleString();
         }
         function chg(i, d) { qty[i] = Math.max(0, Math.min(items[i][2], qty[i] + d)); localStorage.setItem('goodsQty', JSON.stringify(qty)); draw(); }
