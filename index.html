@@ -4,42 +4,44 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     
-    <!-- タイトルと説明文 -->
     <title>グッズの計算機</title>
     <meta property="og:title" content="グッズの計算機">
     <meta property="og:description" content="グッズ代を計算します。購入特典も計算できます。">
-
-    <!-- OGP基本設定 -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://ah-yummy.github.io/DOMOTO_calc/_tky">
     <meta property="og:image" content="https://ah-yummy.github.io/DOMOTO_calc_tky/DOMOTOogp.png">
     <meta property="og:site_name" content="グッズの計算機">
-    
-    <!-- SNS表示設定 -->
     <meta name="twitter:card" content="summary_large_image">
-
-    <!-- アイコン -->
     <link rel="apple-touch-icon" href="DOMOTOfavicon.png">
     <link rel="icon" href="DOMOTOfavicon.png">
 
     <style>
-        body { font-family: system-ui, sans-serif; background: linear-gradient(to bottom, #f8bbd0, #b3e5fc); background-attachment: fixed; margin: 0; padding: 0 0 90px; }
-        h1 { margin: 0; padding: 10px 16px; background: #0066ff; color: #fff; text-align: center; font-size: 24px; line-height: 1.3; font-weight: 800; font-family: "HG教科書体", "YuMincho", "游明朝", "MS Mincho", "MS 朝", serif; }
+        body { font-family: system-ui, sans-serif; background: linear-gradient(to bottom, #f8bbd0, #b3e5fc); background-attachment: fixed; margin: 0; padding: 0 0 120px; }
+        h1 { margin: 0; padding: 10px 16px; background: #0066ff; color: #fff; text-align: center; font-size: 24px; line-height: 1.3; font-weight: 800; }
         .controls { padding: 12px; display: flex; justify-content: space-between; align-items: center; gap: 12px; }
-        .controls button { width: 78px; height: 40px; font-size: 16px; white-space: nowrap; flex-shrink: 0; }
+        .tax-note { padding: 0 12px 10px; font-size: 13px; color: #444; }
         .card { background: rgba(255, 255, 255, 0.9); margin: 10px; border-radius: 12px; padding: 12px; box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15); }
         .ex { background: rgba(236, 236, 236, 0.9); }
         .badge { background: #666; color: #fff; border-radius: 999px; padding: 2px 8px; font-size: 12px; margin-left: 6px; }
         .price { font-weight: 700; color: #183153; }
         .row { display: flex; justify-content: space-between; align-items: center; }
         button { width: 38px; height: 38px; }
-        .qty { font-size: 22px; font-weight: 700; }
-        #bar { position: fixed; left: 0; right: 0; bottom: 0; background: #d91e18; color: #fff; padding: 12px 8px; display: flex; justify-content: space-around; box-shadow: 0 -2px 8px rgba(0, 0, 0, .25); }
-        .barItem { text-align: center; }
-        .label { font-size: 12px; }
+        
+        /* トグルスイッチ */
+        .switch-container { display: flex; align-items: center; cursor: pointer; gap: 10px; }
+        .switch-container input { display: none; }
+        .slider { width: 44px; height: 24px; background: #ccc; border-radius: 12px; position: relative; transition: 0.3s; }
+        .slider:before { content: ""; position: absolute; width: 20px; height: 20px; background: white; border-radius: 50%; top: 2px; left: 2px; transition: 0.3s; }
+        input:checked + .slider { background: #0066ff; }
+        input:checked + .slider:before { transform: translateX(20px); }
+
+        /* 下部バー */
+        #bar { position: fixed; left: 0; right: 0; bottom: 0; background: #d91e18; color: #fff; padding: 12px; box-shadow: 0 -2px 8px rgba(0, 0, 0, .25); display: flex; flex-direction: column; gap: 8px; }
+        .bar-top { display: flex; justify-content: space-between; align-items: center; }
+        .bar-bottom { display: flex; align-items: center; gap: 10px; font-size: 14px; }
         .value { font-size: 24px; font-weight: 800; }
         .footer-container { display: flex; justify-content: space-between; align-items: flex-end; padding: 10px; font-size: 12px; color: #666; }
-        .watermark { color: #888; opacity: 0.2; font-size: 10px; font-weight: 500; padding-right: 6px; }
+        .watermark { opacity: 0.2; font-size: 10px; font-weight: 500; }
     </style>
 </head>
 <body>
@@ -47,9 +49,14 @@
     <h1>グッズの計算機<br>そんなものあるわ</h1>
 
     <div class="controls">
-        <label><input id="filter" type="checkbox"> 選択した商品だけ表示</label>
+        <label class="switch-container">
+            <input id="filter" type="checkbox">
+            <span class="slider"></span>
+            <span>選択した商品だけ表示</span>
+        </label>
         <button onclick="resetAll()">リセット</button>
     </div>
+    <div class="tax-note">※すべて税込価格</div>
 
     <div id="list"></div>
 
@@ -80,7 +87,7 @@
             });
             let t = Math.floor(target / 15000), next = 15000 - target % 15000;
             if (target > 0 && target % 15000 == 0) next = 15000;
-            bar.innerHTML = `<div class=barItem><div class=label>💴合計</div><div class=value>${fmt(total)}</div></div><div class=barItem><div class=label>🎁特典</div><div class=value>${t}セット</div></div><div class=barItem><div class=label>✨次の特典まで</div><div class=value>${fmt(next)}</div></div>`;
+            bar.innerHTML = `<div class=bar-top><span></span><div class=value>💴合計 ${fmt(total)}</div></div><div class=bar-bottom><div>🎁特典：${t}セット</div><div>✨次の特典まで：あと${fmt(next)}</div></div>`;
         }
 
         function chg(i, d) { qty[i] = Math.max(0, Math.min(items[i][2], qty[i] + d)); draw(); }
