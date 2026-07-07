@@ -75,7 +75,7 @@
                 if (only && qty[i] == 0) return;
                 let d = document.createElement("div");
                 d.className = "card" + (it[3] ? " ex" : "");
-                d.innerHTML = `<b>${it[0]}</b>${it[3] ? '<span class="badge">特典対象外</span>' : ''}<div class=price>${fmt(it[1])}</div><div class=row><button ${qty[i] == 0 ? 'disabled' : ''} onclick='chg(${i},-1)'>−</button><span class=qty>${qty[i]}</span><button ${qty[i] >= it[2] ? 'disabled' : ''} onclick='chg(${i},1)'>＋</button></div>`;
+                d.innerHTML = `<b>${it[0]}</b>${it[3] ? '<span class="badge">特典対象外</span>' : ''}<div class=row><div class=price>${fmt(it[1])}</div><div><button ${qty[i] == 0 ? 'disabled' : ''} onclick='chg(${i},-1)'>−</button><button ${qty[i] >= it[2] ? 'disabled' : ''} onclick='chg(${i},1)'>＋</button><span class=qty style="margin-left:8px;">${qty[i]}</span></div></div>`;
                 l.appendChild(d);
             });
             let t = Math.floor(target / 15000), next = 15000 - target % 15000;
