@@ -12,18 +12,18 @@
         .card { background: rgba(255, 255, 255, 0.7); margin: 10px; border-radius: 16px; padding: 14px; backdrop-filter: blur(5px); }
         .row { display: flex; justify-content: space-between; align-items: center; }
         .qty-btn { width: 44px; height: 44px; border-radius: 50%; border: none; background: rgba(255,255,255,.92); cursor: pointer; }
+        .item-link { color: #000; text-decoration: underline; font-weight: bold; }
         
         #bar { 
             position: fixed; left: 10px; right: 10px; bottom: 10px; 
             background: #d91e18; color: #fff; height: 70px; 
             display: grid; grid-template-columns: 1fr auto; align-items: center; 
             padding: 0 15px; box-sizing: border-box; border-radius: 12px;
-            white-space: nowrap;
         }
         
-        .bar-left { font-size: 11px; font-weight: bold; overflow: hidden; }
+        .bar-left { font-size: 11px; font-weight: bold; white-space: nowrap; }
         
-        .bar-right { display: flex; align-items: center; }
+        .bar-right { display: flex; align-items: center; justify-content: flex-end; }
         .total-label { font-size: 14px; font-weight: bold; margin-right: 20px; }
         .total-val { font-size: 26px; font-weight: 800; text-align: right; width: 140px; }
     </style>
@@ -44,12 +44,19 @@
     </div>
     <script>
         const items = [
-            ["フォトパンフ", 3500, 2, false], ["ポリうちわ", 1300, 2, false], ["ハンドタオル", 1900, 2, false],
-            ["アクリルスタンド（全3種類）", 1400, 5, false], ["アクリルスタンド（コンプリートセット）", 4900, 2, false],
-            ["ビッグシルエットTシャツ", 6000, 2, false], ["メタリックトート（2way）", 3900, 2, false],
-            ["マルチストラップ", 2400, 2, false], ["ハンディファン", 5100, 2, false],
-            ["ペンライト", 5800, 2, false], ["チケットキーホルダー（東京会場Ver.）", 1000, 2, false],
-            ["【東京ドームコラボ】Tシャツ BLACK", 6000, 2, true], ["【東京ドームコラボ】Tシャツ WHITE", 6000, 2, true]
+            ["フォトパンフ", 3500, 2, false, "https://store.domotofc.jp/detail.php?goods_id=24"],
+            ["ポリうちわ", 1300, 2, false, "https://store.domotofc.jp/detail.php?order=new_desc&goods_id=15"],
+            ["ハンドタオル", 1900, 2, false, "https://store.domotofc.jp/detail.php?order=new_desc&goods_id=16"],
+            ["アクリルスタンド（全3種類）", 1400, 5, false, "https://store.domotofc.jp/detail.php?order=new_desc&goods_id=25"],
+            ["アクリルスタンド（コンプリートセット）", 4900, 2, false, "https://store.domotofc.jp/detail.php?order=new_desc&goods_id=23"],
+            ["ビッグシルエットTシャツ", 6000, 2, false, "https://store.domotofc.jp/detail.php?order=new_desc&goods_id=12"],
+            ["メタリックトート（2way）", 3900, 2, false, "https://store.domotofc.jp/detail.php?order=new_desc&goods_id=17"],
+            ["マルチストラップ", 2400, 2, false, "https://store.domotofc.jp/detail.php?order=new_desc&goods_id=18"],
+            ["ハンディファン", 5100, 2, false, "https://store.domotofc.jp/detail.php?order=new_desc&goods_id=19"],
+            ["ペンライト", 5800, 2, false, "https://store.domotofc.jp/detail.php?order=new_desc&goods_id=20"],
+            ["チケットキーホルダー（東京会場Ver.）", 1000, 2, false, "https://store.domotofc.jp/detail.php?order=new_desc&goods_id=21"],
+            ["【東京ドームコラボ】Tシャツ BLACK", 6000, 2, true, "https://mitsui-shopping-park.com/ec/p/6260600000036?mallColor=0101"],
+            ["【東京ドームコラボ】Tシャツ WHITE", 6000, 2, true, "https://mitsui-shopping-park.com/ec/p/6260600000037?mallColor=0201"]
         ];
         let qty = JSON.parse(localStorage.getItem('goodsQty')) || Array(items.length).fill(0);
         function draw() {
@@ -61,7 +68,7 @@
                 if (filter.checked && qty[i] == 0) return;
                 let d = document.createElement("div");
                 d.className = "card";
-                d.innerHTML = `<b>${it[0]}</b><div class=row><div>¥${it[1].toLocaleString()}</div><div style="display:flex; align-items:center; gap:8px;"><button class="qty-btn" onclick='chg(${i},-1)'>−</button><div style="width:30px;text-align:center;font-weight:800;">${qty[i]}</div><button class="qty-btn" onclick='chg(${i},1)'>＋</button></div></div>`;
+                d.innerHTML = `<a href="${it[4]}" target="_blank" class="item-link">${it[0]}</a><div class=row><div>¥${it[1].toLocaleString()}</div><div style="display:flex; align-items:center; gap:8px;"><button class="qty-btn" onclick='chg(${i},-1)'>−</button><div style="width:30px;text-align:center;font-weight:800;">${qty[i]}</div><button class="qty-btn" onclick='chg(${i},1)'>＋</button></div></div>`;
                 l.appendChild(d);
             });
             let t = Math.floor(target / 15000), next = 15000 - target % 15000;
