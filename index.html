@@ -28,6 +28,7 @@
         .price { font-weight: 700; color: #183153; }
         .row { display: flex; justify-content: space-between; align-items: center; }
         button { width: 38px; height: 38px; }
+        a { color: #0066ff; text-decoration: none; }
         
         .switch-container { display: flex; align-items: center; cursor: pointer; gap: 8px; font-size: 14px; }
         .switch-container input { display: none; }
@@ -71,7 +72,21 @@
     <div id="bar"></div>
 
     <script>
-        const items = [["フォトパンフ", 3500, 2, false], ["ポリうちわ", 1300, 2, false], ["ハンドタオル", 1900, 2, false], ["アクリルスタンド（ランダム全3種類）", 1400, 5, false], ["アクリルスタンド（コンプリートセット）", 4900, 2, false], ["ビッグシルエットTシャツ", 6000, 2, false], ["メタリックトート（2way）", 3900, 2, false], ["マルチストラップ", 2400, 2, false], ["ハンディファン", 5100, 2, false], ["ペンライト", 5800, 2, false], ["チケットキーホルダー（東京会場Ver.）", 1000, 2, false], ["【東京ドームコラボ】Tシャツ BLACK", 6000, 2, true], ["【東京ドームコラボ】Tシャツ WHITE", 6000, 2, true]];
+        const items = [
+            ["フォトパンフ", 3500, 2, false, "https://store.domotofc.jp/detail.php?goods_id=24"],
+            ["ポリうちわ", 1300, 2, false, "https://store.domotofc.jp/detail.php?order=new_desc&goods_id=15"],
+            ["ハンドタオル", 1900, 2, false, "https://store.domotofc.jp/detail.php?order=new_desc&goods_id=16"],
+            ["アクリルスタンド（全3種類）", 1400, 5, false, "https://store.domotofc.jp/detail.php?order=new_desc&goods_id=25"],
+            ["アクリルスタンド（コンプリートセット）", 4900, 2, false, "https://store.domotofc.jp/detail.php?order=new_desc&goods_id=23"],
+            ["ビッグシルエットTシャツ", 6000, 2, false, "https://store.domotofc.jp/detail.php?order=new_desc&goods_id=12"],
+            ["メタリックトート（2way）", 3900, 2, false, "https://store.domotofc.jp/detail.php?order=new_desc&goods_id=17"],
+            ["マルチストラップ", 2400, 2, false, "https://store.domotofc.jp/detail.php?order=new_desc&goods_id=18"],
+            ["ハンディファン", 5100, 2, false, "https://store.domotofc.jp/detail.php?order=new_desc&goods_id=19"],
+            ["ペンライト", 5800, 2, false, "https://store.domotofc.jp/detail.php?order=new_desc&goods_id=20"],
+            ["チケットキーホルダー（東京会場Ver.）", 1000, 2, false, "https://store.domotofc.jp/detail.php?order=new_desc&goods_id=21"],
+            ["【東京ドームコラボ】Tシャツ BLACK", 6000, 2, true, "https://mitsui-shopping-park.com/ec/p/6260600000036?mallColor=0101"],
+            ["【東京ドームコラボ】Tシャツ WHITE", 6000, 2, true, "https://mitsui-shopping-park.com/ec/p/6260600000037?mallColor=0201"]
+        ];
         let qty = Array(items.length).fill(0);
         const fmt = n => "¥" + n.toLocaleString();
 
@@ -85,7 +100,7 @@
                 if (only && qty[i] == 0) return;
                 let d = document.createElement("div");
                 d.className = "card" + (it[3] ? " ex" : "");
-                d.innerHTML = `<b>${it[0]}</b>${it[3] ? '<span class="badge">特典対象外</span>' : ''}<div class=row><div class=price>${fmt(it[1])}</div><div><button style="margin-right:8px;" ${qty[i] == 0 ? 'disabled' : ''} onclick='chg(${i},-1)'>−</button><span style="font-size:20px; font-weight:800; color:${qty[i] == 0 ? '#aaa' : '#000'}; margin-right:8px; display:inline-block; width:25px; text-align:center;">${qty[i]}</span><button ${qty[i] >= it[2] ? 'disabled' : ''} onclick='chg(${i},1)'>＋</button></div></div>`;
+                d.innerHTML = `<b><a href="${it[4]}" target="_blank">${it[0]}</a></b>${it[3] ? '<span class="badge">特典対象外</span>' : ''}<div class=row><div class=price>${fmt(it[1])}</div><div><button style="margin-right:8px;" ${qty[i] == 0 ? 'disabled' : ''} onclick='chg(${i},-1)'>−</button><span style="font-size:20px; font-weight:800; color:${qty[i] == 0 ? '#aaa' : '#000'}; margin-right:8px; display:inline-block; width:25px; text-align:center;">${qty[i]}</span><button ${qty[i] >= it[2] ? 'disabled' : ''} onclick='chg(${i},1)'>＋</button></div></div>`;
                 l.appendChild(d);
             });
             let t = Math.floor(target / 15000), next = 15000 - target % 15000;
