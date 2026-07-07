@@ -39,8 +39,11 @@
         #bar { position: fixed; left: 0; right: 0; bottom: 0; background: #d91e18; color: #fff; height: 70px; display: flex; align-items: center; padding: 0 20px; box-sizing: border-box; }
         .bar-left { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 2px; }
         .info-row { display: flex; align-items: center; font-size: 12px; font-weight: bold; }
-        /* コロンの位置をさらに5ポイント左へ調整（padding-rightを10pxに増やす） */
-        .info-label { width: 140px; display: flex; justify-content: space-between; padding-right: 10px; }
+        
+        /* ラベル幅固定。コロンを少し左（margin-right: 5px）に動かし、右の数値は絶対位置でガード */
+        .info-label { width: 140px; display: flex; justify-content: flex-end; align-items: center; }
+        .label-text { margin-right: auto; }
+        .colon { margin-right: 5px; } /* これを調整してコロンの位置を制御 */
         
         .bar-right { position: relative; width: 140px; height: 70px; }
         .total-label { position: absolute; left: 5px; top: 25px; font-size: 12px; font-weight: bold; }
@@ -104,7 +107,7 @@
             let t = Math.floor(target / 15000), next = 15000 - target % 15000;
             if (target > 0 && target % 15000 == 0) next = 15000;
             
-            document.getElementById('bar-left-content').innerHTML = `<div class=info-row><div class=info-label><span>🎁 特典</span><span>：</span></div><span style="white-space:nowrap">${t}セット</span></div><div class=info-row><div class=info-label><span>✨️ 次の特典まであと</span><span>：</span></div><span style="white-space:nowrap">¥${next.toLocaleString()}</span></div>`;
+            document.getElementById('bar-left-content').innerHTML = `<div class=info-row><div class=info-label><span class=label-text>🎁 特典</span><span class=colon>：</span></div><span style="white-space:nowrap">${t}セット</span></div><div class=info-row><div class=info-label><span class=label-text>✨️ 次の特典まであと</span><span class=colon>：</span></div><span style="white-space:nowrap">¥${next.toLocaleString()}</span></div>`;
             document.getElementById('total-val-content').innerText = fmt(total);
         }
         function chg(i, d) {
