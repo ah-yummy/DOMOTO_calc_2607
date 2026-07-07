@@ -14,7 +14,7 @@
         .tax-note { padding: 0 12px 10px; font-size: 13px; color: #444; }
         .card { background: rgba(255, 255, 255, 0.9); margin: 10px; border-radius: 12px; padding: 12px; box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15); }
         .ex { background: rgba(236, 236, 236, 0.9); }
-        .badge { background: #666; color: #fff; border-radius: 4px; padding: 2px 6px; font-size: 11px; margin-right: 8px; }
+        .badge { background: #666; color: #fff; border-radius: 4px; padding: 2px 6px; font-size: 11px; margin-left: 8px; }
         .price-area { display: flex; align-items: center; }
         .price { font-weight: 700; color: #183153; }
         .row { display: flex; justify-content: space-between; align-items: center; }
@@ -97,7 +97,7 @@
                 if (only && qty[i] == 0) return;
                 let d = document.createElement("div");
                 d.className = "card" + (it[3] ? " ex" : "");
-                d.innerHTML = `<b><a href="${it[4]}" target="_blank" class="item-link">${it[0]}</a></b><div class=row><div class=price-area>${it[3] ? '<span class=badge>特典対象外</span>' : ''}<div class=price>${fmt(it[1])}</div></div><div><button style="margin-right:8px;" ${qty[i] == 0 ? 'disabled' : ''} onclick='chg(${i},-1)'>−</button><span style="font-size:20px; font-weight:800; color:${qty[i] == 0 ? '#aaa' : '#000'}; margin-right:8px; display:inline-block; width:25px; text-align:center;">${qty[i]}</span><button ${qty[i] >= it[2] ? 'disabled' : ''} onclick='chg(${i},1)'>＋</button></div></div>`;
+                d.innerHTML = `<b><a href="${it[4]}" target="_blank" class="item-link">${it[0]}</a></b><div class=row><div class=price-area><div class=price>${fmt(it[1])}</div>${it[3] ? '<span class=badge>特典対象外</span>' : ''}</div><div><button style="margin-right:8px;" ${qty[i] == 0 ? 'disabled' : ''} onclick='chg(${i},-1)'>−</button><span style="font-size:20px; font-weight:800; color:${qty[i] == 0 ? '#aaa' : '#000'}; margin-right:8px; display:inline-block; width:25px; text-align:center;">${qty[i]}</span><button ${qty[i] >= it[2] ? 'disabled' : ''} onclick='chg(${i},1)'>＋</button></div></div>`;
                 l.appendChild(d);
             });
             let t = Math.floor(target / 15000), next = 15000 - target % 15000;
