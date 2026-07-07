@@ -36,10 +36,9 @@
         input:checked + .slider { background: #0066ff; }
         input:checked + .slider:before { transform: translateX(18px); }
         
-        /* バーのレイアウトブラッシュアップ */
         #bar { position: fixed; left: 0; right: 0; bottom: 0; background: #d91e18; color: #fff; height: 70px; display: grid; grid-template-columns: 1fr auto; align-items: center; padding: 0 20px; }
         .bar-left { display: grid; grid-template-columns: 145px 1fr; align-items: center; gap: 2px; }
-        .info-label { display: grid; grid-template-columns: 1fr auto; align-items: center; }
+        .info-label { display: grid; grid-template-columns: 1fr auto; align-items: center; font-size: 12px; font-weight: bold; }
         .bar-right { display: grid; grid-template-columns: auto auto; align-items: center; gap: 10px; }
         .total-label { font-size: 12px; font-weight: bold; }
         .total-val { font-size: 21px; font-weight: 800; }
