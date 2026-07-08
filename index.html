@@ -11,158 +11,130 @@
 
     <style>
         html, body { scrollbar-width: none !important; -ms-overflow-style: none !important; overflow-x: hidden !important; }
-        html::-webkit-scrollbar, body::-webkit-scrollbar { display: none !important; width: 0 !important; height: 0 !important; }
         body { font-family: system-ui, sans-serif; background: linear-gradient(to bottom, #f8bbd0, #b3e5fc); background-attachment: fixed; margin: 0; padding: 0 0 100px; }
-        h1 { margin: 0; padding: 0 16px; height: 70px; display: flex; flex-direction: column; justify-content: center; background: #0066ff; color: #fff; text-align: center; font-size: 20px; line-height: 1.2; font-weight: 800; }
+        h1 { margin: 0; padding: 0 16px; height: 70px; display: flex; flex-direction: column; justify-content: center; background: #0066ff; color: #fff; text-align: center; font-size: 20px; font-weight: 800; }
         .kyokasho { font-family: "YuKyokasho", "游教科書体", serif; font-size: 18px; font-weight: 600; }
-        .controls { padding: 12px; display: flex; justify-content: space-between; align-items: center; gap: 8px; }
-        .reset-btn { height: 40px; padding: 0 20px; border-radius: 20px; border: none; background: rgba(255,255,255,.92); box-shadow: 0 2px 6px rgba(0,0,0,.12), inset 0 1px 0 rgba(255,255,255,.9); color: #333; font-size: 15px; font-weight: 600; cursor: pointer; transition: transform .18s ease, box-shadow .18s ease, background-color .18s ease; }
-        .reset-btn:active { transform: scale(.94); box-shadow: inset 0 2px 6px rgba(0,0,0,.15); }
-        .tax-note { padding: 0 12px 10px; font-size: 13px; color: #444; }
+        .controls { padding: 12px; display: flex; flex-direction: column; gap: 8px; }
+        
+        /* セグメントボタン */
+        .segment-container { display: flex; gap: 4px; background: rgba(255,255,255,.5); padding: 4px; border-radius: 24px; }
+        .segment-btn { flex: 1; height: 40px; border-radius: 20px; border: none; background: transparent; color: #555; font-weight: 600; cursor: pointer; transition: .2s; }
+        .segment-btn.active { background: #fff; color: #0066ff; box-shadow: 0 2px 4px rgba(0,0,0,.1); }
+        
+        .reset-btn { height: 40px; padding: 0 20px; border-radius: 20px; border: none; background: rgba(255,255,255,.92); box-shadow: 0 2px 6px rgba(0,0,0,.12); color: #333; font-size: 15px; font-weight: 600; cursor: pointer; }
+        
         .card { background: rgba(255, 255, 255, 0.7); margin: 10px; border-radius: 16px; padding: 14px; backdrop-filter: blur(5px); box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); }
-        .badge { background: #666; color: #fff; border-radius: 4px; padding: 2px 6px; font-size: 11px; margin-left: 8px; }
-        .price-area { display: flex; align-items: center; }
+        .badge { background: #666; color: #fff; border-radius: 4px; padding: 2px 6px; font-size: 10px; margin-left: 6px; vertical-align: middle; }
         .price { font-weight: 700; color: #183153; }
-        .row { display: flex; justify-content: space-between; align-items: center; }
-        .qty-val { font-size: 22px; font-weight: 800; width: 30px; text-align: center; transition: color .2s ease, transform .18s cubic-bezier(.34,1.56,.64,1); }
-        .qty-zero { color: #555; }
-        .qty-active { color: #000; }
-        .qty-pop { transform: scale(1.18); }
-        .qty-btn { width: 44px; height: 44px; border-radius: 50%; border: none; background: rgba(255,255,255,.92); box-shadow: 0 2px 6px rgba(0,0,0,.12), inset 0 1px 0 rgba(255,255,255,.9); color: #333; font-size: 22px; font-weight: 600; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: transform .18s ease, box-shadow .18s ease, background-color .18s ease; }
-        .qty-btn:active { transform: scale(.94); box-shadow: inset 0 2px 6px rgba(0,0,0,.15); }
+        .row { display: flex; justify-content: space-between; align-items: center; margin-top: 5px; }
+        
+        /* リンクスタイル */
+        .item-link { color: inherit; text-decoration: underline; font-weight: bold; }
+        
+        /* 非活性時の制御（ボタンエリアのみに限定） */
+        .card.disabled .qty-area { opacity: 0.4; pointer-events: none; filter: grayscale(1); }
+        
+        .qty-val { font-size: 22px; font-weight: 800; width: 30px; text-align: center; }
+        .qty-btn { width: 44px; height: 44px; border-radius: 50%; border: none; background: #fff; font-size: 22px; cursor: pointer; }
         .qty-btn:disabled { opacity: 0.3; }
-        .item-link { color: #000; text-decoration: underline; display: inline-flex; align-items: center; gap: 4px; }
-        .item-link::after { content: ""; display: inline-block; width: 12px; height: 12px; background: currentColor; -webkit-mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>') no-repeat center; mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>') no-repeat center; }
-        .switch-container { display: flex; align-items: center; cursor: pointer; gap: 8px; font-size: 14px; }
-        .switch-container input { display: none; }
-        .slider { width: 40px; height: 22px; background: #ccc; border-radius: 12px; position: relative; transition: 0.3s; }
-        .slider:before { content: ""; position: absolute; width: 18px; height: 18px; background: white; border-radius: 50%; top: 2px; left: 2px; transition: 0.3s; }
-        input:checked + .slider { background: #0066ff; }
-        input:checked + .slider:before { transform: translateX(18px); }
         
-        #bar { position: fixed; left: 0; right: 0; bottom: 0; background: #d91e18; color: #fff; height: 70px; display: flex; align-items: center; padding: 0 20px; box-sizing: border-box; }
-        .bar-left { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 2px; }
-        .info-row { display: flex; align-items: center; font-size: 12px; font-weight: bold; }
-        
-        .info-label { width: 140px; display: flex; justify-content: flex-end; align-items: center; }
-        .label-text { margin-right: auto; }
-        .colon { margin-right: 13px; } 
-        .val-text { margin-left: -10px; font-size: 14px; }
-        
-        .bar-right { position: relative; width: 140px; height: 70px; }
-        .total-label { position: absolute; left: 5px; top: 25px; font-size: 12px; font-weight: bold; }
-        .total-val { position: absolute; right: 0; top: 20px; font-size: 23px; font-weight: 800; }
-        
-        .footer-container { display: flex; justify-content: flex-end; align-items: flex-end; padding: 5px 10px; font-size: 12px; color: #666; }
-        .watermark { opacity: 0.2; font-size: 10px; font-weight: 500; }
+        #bar { position: fixed; left: 0; right: 0; bottom: 0; background: #d91e18; color: #fff; height: 70px; display: flex; align-items: center; padding: 0 20px; }
+        .bar-left { flex: 1; font-size: 12px; font-weight: bold; }
+        .bar-right { width: 140px; text-align: right; font-size: 23px; font-weight: 800; }
     </style>
 </head>
 <body>
     <h1>グッズの計算機<br><span class="kyokasho">そんなものあるわ</span></h1>
     <div class="controls">
-        <label class="switch-container">
-            <input id="filter" type="checkbox">
-            <span class="slider"></span>
-            <span>選択した商品だけ表示</span>
-        </label>
+        <div class="segment-container">
+            <button id="btn-tky" class="segment-btn" onclick="toggleVenue('tky')">東京公演</button>
+            <button id="btn-osk" class="segment-btn" onclick="toggleVenue('osk')">大阪公演</button>
+        </div>
         <button class="reset-btn" onclick="resetAll()">リセット</button>
     </div>
-    <div class="tax-note">※すべて税込価格</div>
     <div id="list"></div>
-    <div class="footer-container">
-        <div class="watermark">X：@ah_yummy</div>
-    </div>
     <div id="bar">
         <div class="bar-left" id="bar-left-content"></div>
-        <div class="bar-right"><div class="total-label">合計</div><div class="total-val" id="total-val-content"></div></div>
+        <div class="bar-right" id="total-val-content"></div>
     </div>
     <script>
-        // PWAのサービスワーカー登録
-        if ("serviceWorker" in navigator) {
-            navigator.serviceWorker.register("./sw.js");
-        }
+        if ("serviceWorker" in navigator) navigator.serviceWorker.register("./sw.js");
 
         const items = [
-            ["フォトパンフ", 3500, 2, false, "https://store.domotofc.jp/detail.php?goods_id=24"],
-            ["ポリうちわ", 1300, 2, false, "https://store.domotofc.jp/detail.php?order=new_desc&goods_id=15"],
-            ["ハンドタオル", 1900, 2, false, "https://store.domotofc.jp/detail.php?order=new_desc&goods_id=16"],
-            ["アクリルスタンド（全3種類）", 1400, 5, false, "https://store.domotofc.jp/detail.php?order=new_desc&goods_id=25"],
-            ["アクリルスタンド（コンプリートセット）", 4900, 2, false, "https://store.domotofc.jp/detail.php?order=new_desc&goods_id=23"],
-            ["ビッグシルエットTシャツ", 6000, 2, false, "https://store.domotofc.jp/detail.php?order=new_desc&goods_id=12"],
-            ["メタリックトート（2way）", 3900, 2, false, "https://store.domotofc.jp/detail.php?order=new_desc&goods_id=17"],
-            ["マルチストラップ", 2400, 2, false, "https://store.domotofc.jp/detail.php?order=new_desc&goods_id=18"],
-            ["ハンディファン", 5100, 2, false, "https://store.domotofc.jp/detail.php?order=new_desc&goods_id=19"],
-            ["ペンライト", 5800, 2, false, "https://store.domotofc.jp/detail.php?order=new_desc&goods_id=20"],
-            ["チケットキーホルダー（東京会場Ver.）", 1000, 2, false, "https://store.domotofc.jp/detail.php?order=new_desc&goods_id=21"],
-            ["【東京ドームコラボ】Tシャツ BLACK", 6000, 2, true, "https://mitsui-shopping-park.com/ec/p/6260600000036?mallColor=0101"],
-            ["【東京ドームコラボ】Tシャツ WHITE", 6000, 2, true, "https://mitsui-shopping-park.com/ec/p/6260600000037?mallColor=0201"]
+            ["フォトパンフ", 3500, 2, 0, false, "https://store.domotofc.jp/detail.php?goods_id=24"],
+            ["ポリうちわ", 1300, 2, 0, false, "https://store.domotofc.jp/detail.php?order=new_desc&goods_id=15"],
+            ["ハンドタオル", 1900, 2, 0, false, "https://store.domotofc.jp/detail.php?order=new_desc&goods_id=16"],
+            ["アクリルスタンド（全3種類）", 1400, 5, 0, false, "https://store.domotofc.jp/detail.php?order=new_desc&goods_id=25"],
+            ["アクリルスタンド（コンプリートセット）", 4900, 2, 0, false, "https://store.domotofc.jp/detail.php?order=new_desc&goods_id=23"],
+            ["ビッグシルエットTシャツ", 6000, 2, 0, false, "https://store.domotofc.jp/detail.php?order=new_desc&goods_id=12"],
+            ["メタリックトート（2way）", 3900, 2, 0, false, "https://store.domotofc.jp/detail.php?order=new_desc&goods_id=17"],
+            ["マルチストラップ", 2400, 2, 0, false, "https://store.domotofc.jp/detail.php?order=new_desc&goods_id=18"],
+            ["ハンディファン", 5100, 2, 0, false, "https://store.domotofc.jp/detail.php?order=new_desc&goods_id=19"],
+            ["ペンライト", 5800, 2, 0, false, "https://store.domotofc.jp/detail.php?order=new_desc&goods_id=20"],
+            ["チケットキーホルダー（東京会場Ver.）", 1000, 2, 1, false, "https://store.domotofc.jp/detail.php?order=new_desc&goods_id=21"],
+            ["チケットキーホルダー（大阪会場Ver.）", 1000, 2, 2, false, "https://store.domotofc.jp/detail.php?order=new_desc&goods_id=22"],
+            ["【東京ドームコラボ】Tシャツ BLACK", 6000, 2, 1, true, "https://mitsui-shopping-park.com/ec/p/6260600000036?mallColor=0101"],
+            ["【東京ドームコラボ】Tシャツ WHITE", 6000, 2, 1, true, "https://mitsui-shopping-park.com/ec/p/6260600000037?mallColor=0201"]
         ];
-        
-        const listEl = document.getElementById("list");
-        const filterEl = document.getElementById("filter");
-        const barLeftEl = document.getElementById("bar-left-content");
-        const totalValEl = document.getElementById("total-val-content");
 
-        let qty;
-        try {
-            qty = JSON.parse(localStorage.getItem("goodsQty"));
-        } catch {
-            qty = null;
-        }
+        let qty = JSON.parse(localStorage.getItem("DOMOTO_calc_2607_qty"));
         if (!Array.isArray(qty) || qty.length !== items.length) {
             qty = Array(items.length).fill(0);
         }
 
-        const fmt = n => "¥" + n.toLocaleString();
+        let v = JSON.parse(localStorage.getItem("DOMOTO_calc_2607_venues")) || {tky: true, osk: true};
+
+        function toggleVenue(target) {
+            const other = target === "tky" ? "osk" : "tky";
+            if (v[target] && !v[other]) return;
+            v[target] = !v[target];
+            localStorage.setItem("DOMOTO_calc_2607_venues", JSON.stringify(v));
+            updateUI();
+        }
+
+        function updateUI() {
+            document.getElementById("btn-tky").className = `segment-btn ${v.tky ? 'active' : ''}`;
+            document.getElementById("btn-osk").className = `segment-btn ${v.osk ? 'active' : ''}`;
+            draw();
+        }
+
         function draw() {
+            const listEl = document.getElementById("list");
             listEl.innerHTML = "";
-            let only = filterEl.checked, total = 0, target = 0;
+            let total = 0, target = 0;
             items.forEach((it, i) => {
-                total += qty[i] * it[1];
-                if (!it[3]) target += qty[i] * it[1];
-                if (only && qty[i] == 0) return;
-                let d = document.createElement("div");
-                d.className = "card";
-                d.innerHTML = `<b><a href="${it[4]}" target="_blank" rel="noopener noreferrer" class="item-link">${it[0]}</a></b><div class=row><div class=price-area><div class=price>${fmt(it[1])}</div>${it[3] ? '<span class=badge>購入特典の加算対象外</span>' : ''}</div><div style="display:flex; align-items:center; gap:8px;"><button class="qty-btn" aria-label="数量を減らす" ${qty[i] == 0 ? 'disabled' : ''} onclick='chg(${i},-1)'>−</button><div class="qty-val ${qty[i] == 0 ? 'qty-zero' : 'qty-active'}">${qty[i]}</div><button class="qty-btn" aria-label="数量を増やす" ${qty[i] >= it[2] ? 'disabled' : ''} onclick='chg(${i},1)'>＋</button></div></div>`;
-                listEl.appendChild(d);
+                const en = (it[3] === 0) || (it[3] === 1 && v.tky) || (it[3] === 2 && v.osk);
+                if (en) {
+                    total += qty[i] * it[1];
+                    if (!it[4]) target += qty[i] * it[1];
+                }
+                
+                const linkHTML = it[5] 
+                    ? `<a class="item-link" href="${it[5]}" target="_blank" rel="noopener noreferrer">${it[0]}</a>` 
+                    : it[0];
+
+                listEl.innerHTML += `
+                <div class="card ${en ? '' : 'disabled'}">
+                    <b>${linkHTML}${it[4] ? '<span class=badge>特典除外</span>' : ''}</b>
+                    <div class="row">
+                        <div class="price">¥${it[1].toLocaleString()}</div>
+                        <div class="qty-area" style="display:flex;align-items:center;gap:10px">
+                            <button class="qty-btn" ${qty[i]==0?'disabled':''} onclick="chg(${i},-1)">−</button>
+                            <span class="qty-val">${qty[i]}</span>
+                            <button class="qty-btn" ${qty[i]>=it[2]?'disabled':''} onclick="chg(${i},1)">＋</button>
+                        </div>
+                    </div>
+                </div>`;
             });
-            let t = Math.floor(target / 15000), next = 15000 - target % 15000;
-            if (target > 0 && target % 15000 == 0) next = 15000;
-            
-            barLeftEl.innerHTML = `<div class=info-row><div class=info-label><span class=label-text>🎁 購入特典</span><span class=colon>：</span></div><span class="val-text" style="white-space:nowrap">${t}セット</span></div><div class=info-row><div class=info-label><span class=label-text>✨️ 次の特典まであと</span><span class=colon>：</span></div><span class="val-text" style="white-space:nowrap">¥${next.toLocaleString()}</span></div>`;
-            totalValEl.innerText = fmt(total);
+            localStorage.setItem("DOMOTO_calc_2607_qty", JSON.stringify(qty));
+            document.getElementById("bar-left-content").innerHTML = `特典セット:${Math.floor(target/15000)}<br>あと:${(15000 - target%15000).toLocaleString()}`;
+            document.getElementById("total-val-content").innerText = "¥" + total.toLocaleString();
         }
-        function chg(i, d) {
-            qty[i] = Math.max(0, Math.min(items[i][2], qty[i] + d));
-            localStorage.setItem('goodsQty', JSON.stringify(qty));
-            draw();
-            requestAnimationFrame(() => {
-                requestAnimationFrame(() => {
-                    const vals = document.querySelectorAll(".qty-val");
-                    if (vals[i]) {
-                        vals[i].classList.add("qty-pop");
-                        setTimeout(() => {
-                            vals[i].classList.remove("qty-pop");
-                        }, 150);
-                    }
-                });
-            });
-        }
-        function resetAll() {
-            qty.fill(0);
-            localStorage.removeItem('goodsQty');
-            draw();
-            requestAnimationFrame(() => {
-                requestAnimationFrame(() => {
-                    document.querySelectorAll(".qty-val").forEach(v => {
-                        v.classList.add("qty-pop");
-                        setTimeout(() => v.classList.remove("qty-pop"), 150);
-                    });
-                });
-            });
-        }
-        filterEl.onchange = draw;
-        draw();
+
+        function chg(i, d) { qty[i] = Math.max(0, Math.min(items[i][2], qty[i] + d)); draw(); }
+        function resetAll() { localStorage.removeItem("DOMOTO_calc_2607_qty"); qty = Array(items.length).fill(0); draw(); }
+        
+        updateUI();
     </script>
 </body>
 </html>
