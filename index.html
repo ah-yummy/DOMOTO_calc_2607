@@ -640,4 +640,36 @@
                         );
 
                         setTimeout(() => {
-                            bonus.classList
+                            bonus.classList.remove(
+                                "bonus-up",
+                                "bonus-down"
+                            );
+                        }, 1000);
+                    }
+                }
+
+                beforeTotal = newTotal;
+                beforeBonus = newBonus;
+            });
+        });
+    }
+
+    function resetAll() {
+        qty.fill(0);
+        localStorage.removeItem("goodsQty");
+        draw();
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+                document.querySelectorAll(".qty-val").forEach(v => {
+                    v.classList.add("qty-pop");
+                    setTimeout(() => v.classList.remove("qty-pop"), 150);
+                });
+            });
+        });
+    }
+
+    document.getElementById("filter").addEventListener("change", draw);
+    draw();
+</script>
+</body>
+</html>
