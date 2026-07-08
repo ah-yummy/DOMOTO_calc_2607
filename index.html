@@ -3,7 +3,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#0066ff">
     
-    <title>グッズ的計算機</title>
+    <title>グッズの計算機</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="DOMOTOfavicon.png">
 
@@ -476,7 +476,7 @@
                 if (!it[3]) target += qty[i] * it[1];
             }
 
-            const show = (!filterEl.checked || qty[i] > 0);
+            const show = filterEl.checked ? (available && qty[i] > 0) : true;
             if (!show) return;
 
             visibleCount++;
