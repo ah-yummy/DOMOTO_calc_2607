@@ -20,10 +20,11 @@
         .segment-container { display: flex; gap: 8px; margin-left: auto; }
         
         .segment-btn { height: 40px; padding: 0 16px; min-width: 100px; border-radius: 20px; border: none; background: #ccc; color: #777; font-size: 14px; font-weight: 600; cursor: pointer; transition: transform .18s ease, box-shadow .18s ease, background-color .18s ease; box-shadow: 0 2px 6px rgba(0,0,0,.12), inset 0 1px 0 rgba(255,255,255,.9); display: flex; align-items: center; justify-content: center; }
-        .segment-btn:active, .reset-btn:active { transform: scale(.94); box-shadow: inset 0 2px 6px rgba(0,0,0,.15); }
-        .segment-btn.active { background: #fff; color: #000; }
+        .segment-btn:active { transform: scale(.94); box-shadow: inset 0 2px 6px rgba(0,0,0,.15); }
+        .segment-btn.active { background: #fff; color: #000; box-shadow: inset 0 2px 6px rgba(0,0,0,.18); transform: translateY(1px); }
         
         .reset-btn { height: 40px; padding: 0 20px; border-radius: 20px; border: none; background: rgba(255,255,255,.92); box-shadow: 0 2px 6px rgba(0,0,0,.12), inset 0 1px 0 rgba(255,255,255,.9); color: #333; font-size: 15px; font-weight: 600; cursor: pointer; transition: transform .18s ease, box-shadow .18s ease; }
+        .reset-btn:active { transform: scale(.94); box-shadow: inset 0 2px 6px rgba(0,0,0,.15); }
         
         .tax-note { padding: 0 12px 10px; font-size: 13px; color: #444; }
         .card { background: rgba(255, 255, 255, 0.7); margin: 10px; border-radius: 16px; padding: 14px; backdrop-filter: blur(5px); box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); transition: opacity .3s; }
