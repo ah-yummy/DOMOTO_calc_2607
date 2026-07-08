@@ -3,7 +3,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#0066ff">
     
-    <title>グッズの計算機</title>
+    <title>グッズ的計算機</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="DOMOTOfavicon.png">
 
@@ -202,9 +202,6 @@
             mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>') no-repeat center;
         }
 
-
-        /* 7月7日最終版から移植したトグル */
-
         .switch-container {
             display: flex;
             align-items: center;
@@ -247,16 +244,12 @@
             transform: translateX(18px);
         }
 
-
-        /* トグル＋リセット配置 */
-
         .control-bottom {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 12px 16px 0;
         }
-
 
         .reset-btn {
             height: 40px;
@@ -277,14 +270,12 @@
             box-shadow: inset 0 2px 6px rgba(0,0,0,.15);
         }
 
-
         .empty-message {
             text-align: center;
             font-size: 14px;
             color: #444;
             padding: 12px 0 0;
         }
-
 
         #bar {
             position: fixed;
@@ -389,44 +380,36 @@
         </div>
     </div>
 
-
     <div id="list"></div>
 
-
     <div class="control-bottom">
-
         <label class="switch-container">
             <input id="filter" type="checkbox">
             <span class="slider"></span>
             <span>選択した商品だけ表示</span>
         </label>
 
-
         <button class="reset-btn" onclick="resetAll()">
             リセット
         </button>
-
     </div>
-
 
     <div class="footer-container">
         <div class="watermark">X：@ah_yummy</div>
     </div>
 
-
     <div id="bar">
         <div class="bar-left" id="bar-left-content"></div>
-
         <div class="bar-right">
             <div class="total-label">合計</div>
             <div class="total-val" id="total-val-content"></div>
         </div>
     </div>
+
 <script>
     if ("serviceWorker" in navigator) {
         navigator.serviceWorker.register("./sw.js");
     }
-
 
     const items = [
         ["フォトパンフ", 3500, 2, false, "https://store.domotofc.jp/detail.php?goods_id=24", "all"],
@@ -439,17 +422,13 @@
         ["マルチストラップ", 2400, 2, false, "https://store.domotofc.jp/detail.php?order=new_desc&goods_id=18", "all"],
         ["ハンディファン", 5100, 2, false, "https://store.domotofc.jp/detail.php?order=new_desc&goods_id=19", "all"],
         ["ペンライト", 5800, 2, false, "https://store.domotofc.jp/detail.php?order=new_desc&goods_id=20", "all"],
-
         ["チケットキーホルダー（東京会場Ver.）", 1000, 2, false, "https://store.domotofc.jp/detail.php?order=new_desc&goods_id=21", "tokyo"],
         ["チケットキーホルダー（大阪会場Ver.）", 1000, 2, false, "https://store.domotofc.jp/detail.php?order=new_desc&goods_id=22", "osaka"],
-
         ["【東京ドームコラボ】Tシャツ BLACK", 6000, 2, true, "https://mitsui-shopping-park.com/ec/p/6260600000036?mallColor=0101", "tokyo"],
         ["【東京ドームコラボ】Tシャツ WHITE", 6000, 2, true, "https://mitsui-shopping-park.com/ec/p/6260600000037?mallColor=0201", "tokyo"]
     ];
 
-
     let qty;
-
     try {
         qty = JSON.parse(localStorage.getItem("goodsQty"));
     } catch {
@@ -460,343 +439,117 @@
         qty = Array(items.length).fill(0);
     }
 
-
-    let activeSegs =
-        JSON.parse(localStorage.getItem("activeSegs"))
-        || {
-            tokyo: true,
-            osaka: true
-        };
-
+    let activeSegs = JSON.parse(localStorage.getItem("activeSegs")) || { tokyo: true, osaka: true };
 
     const fmt = n => "¥" + n.toLocaleString();
 
-
     function toggleSeg(s) {
-
-        if (
-            activeSegs[s] &&
-            Object.values(activeSegs).filter(v => v).length === 1
-        ) {
-            return;
-        }
-
-
+        if (activeSegs[s] && Object.values(activeSegs).filter(v => v).length === 1) return;
         activeSegs[s] = !activeSegs[s];
-
-        localStorage.setItem(
-            "activeSegs",
-            JSON.stringify(activeSegs)
-        );
-
+        localStorage.setItem("activeSegs", JSON.stringify(activeSegs));
         draw();
     }
-function draw() {
 
-    const btnT = document.getElementById("seg-tokyo");
-    const btnO = document.getElementById("seg-osaka");
-    const filterEl = document.getElementById("filter");
+    function draw() {
+        const btnT = document.getElementById("seg-tokyo");
+        const btnO = document.getElementById("seg-osaka");
+        const filterEl = document.getElementById("filter");
 
+        btnT.className = "segment-btn" + (activeSegs.tokyo ? " active" : "");
+        btnT.innerHTML = (activeSegs.tokyo ? '<span class="check">✓</span>' : '<span class="check"></span>') + "東京会場";
 
-    btnT.className =
-        "segment-btn" + (activeSegs.tokyo ? " active" : "");
+        btnO.className = "segment-btn" + (activeSegs.osaka ? " active" : "");
+        btnO.innerHTML = (activeSegs.osaka ? '<span class="check">✓</span>' : '<span class="check"></span>') + "大阪会場";
 
-    btnT.innerHTML =
-        (activeSegs.tokyo
-            ? '<span class="check">✓</span>'
-            : '<span class="check"></span>')
-        + "東京会場";
+        const listEl = document.getElementById("list");
+        listEl.innerHTML = "";
 
+        let total = 0;
+        let target = 0;
+        let visibleCount = 0;
 
-    btnO.className =
-        "segment-btn" + (activeSegs.osaka ? " active" : "");
+        items.forEach((it, i) => {
+            const available = (it[5] === "all") || (it[5] === "tokyo" && activeSegs.tokyo) || (it[5] === "osaka" && activeSegs.osaka);
 
-    btnO.innerHTML =
-        (activeSegs.osaka
-            ? '<span class="check">✓</span>'
-            : '<span class="check"></span>')
-        + "大阪会場";
-
-
-    const listEl = document.getElementById("list");
-
-    listEl.innerHTML = "";
-
-
-    let total = 0;
-    let target = 0;
-    let visibleCount = 0;
-
-
-    items.forEach((it, i) => {
-
-
-        // 会場条件
-        const available =
-            (it[5] === "all")
-            ||
-            (it[5] === "tokyo" && activeSegs.tokyo)
-            ||
-            (it[5] === "osaka" && activeSegs.osaka);
-
-
-
-        // 合計・特典計算は会場条件だけで判定
-        if (available) {
-
-            total += qty[i] * it[1];
-
-            if (!it[3]) {
-                target += qty[i] * it[1];
+            if (available) {
+                total += qty[i] * it[1];
+                if (!it[3]) target += qty[i] * it[1];
             }
+
+            const show = (!filterEl.checked || qty[i] > 0);
+            if (!show) return;
+
+            visibleCount++;
+            let d = document.createElement("div");
+            d.className = "card" + (available ? "" : " disabled");
+            d.innerHTML = `
+                <b><a href="${it[4]}" target="_blank" rel="noopener noreferrer" class="item-link">${it[0]}</a></b>
+                <div class="row">
+                    <div class="price-area">
+                        <div class="price">${fmt(it[1])}</div>
+                        ${it[3] ? '<span class="badge">購入特典の加算対象外</span>' : ''}
+                    </div>
+                    <div class="qty-area" style="display:flex; align-items:center; gap:8px;">
+                        <button class="qty-btn" aria-label="数量を減らす" ${qty[i] == 0 ? 'disabled' : ''} onclick="chg(${i},-1)">−</button>
+                        <div class="qty-val ${qty[i] == 0 ? 'qty-zero' : 'qty-active'}">${qty[i]}</div>
+                        <button class="qty-btn" aria-label="数量を増やす" ${qty[i] >= it[2] ? 'disabled' : ''} onclick="chg(${i},1)">＋</button>
+                    </div>
+                </div>`;
+            listEl.appendChild(d);
+        });
+
+        if (filterEl.checked && visibleCount === 0) {
+            listEl.innerHTML = '<div class="empty-message">商品が選択されていません</div>';
         }
 
+        let t = Math.floor(target / 15000);
+        let next = 15000 - target % 15000;
+        if (target > 0 && target % 15000 === 0) next = 15000;
 
+        document.getElementById("bar-left-content").innerHTML = `
+            <div class="info-row">
+                <div class="info-label"><span class="label-text">🎁 購入特典</span><span class="colon">：</span></div>
+                <span class="val-text" style="white-space:nowrap">${t}セット</span>
+            </div>
+            <div class="info-row">
+                <div class="info-label"><span class="label-text">✨️ 次の特典まであと</span><span class="colon">：</span></div>
+                <span class="val-text" style="white-space:nowrap">¥${next.toLocaleString()}</span>
+            </div>`;
 
-        // トグルON時の表示条件
-        const show =
-            available &&
-            (!filterEl.checked || qty[i] > 0);
+        document.getElementById("total-val-content").innerText = fmt(total);
+    }
 
-
-
-        if (!show) {
-            return;
-        }
-
-
-        visibleCount++;
-
-
-        let d = document.createElement("div");
-
-        d.className =
-            "card";
-
-
-        d.innerHTML =
-        `
-        <b>
-            <a href="${it[4]}"
-               target="_blank"
-               rel="noopener noreferrer"
-               class="item-link">
-               ${it[0]}
-            </a>
-        </b>
-
-        <div class=row>
-
-            <div class=price-area>
-
-                <div class=price>
-                    ${fmt(it[1])}
-                </div>
-
-                ${
-                    it[3]
-                    ? '<span class=badge>購入特典の加算対象外</span>'
-                    : ''
+    function chg(i, d) {
+        qty[i] = Math.max(0, Math.min(items[i][2], qty[i] + d));
+        localStorage.setItem("goodsQty", JSON.stringify(qty));
+        draw();
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+                const vals = document.querySelectorAll(".qty-val");
+                if (vals[i]) {
+                    vals[i].classList.add("qty-pop");
+                    setTimeout(() => vals[i].classList.remove("qty-pop"), 150);
                 }
-
-            </div>
-
-
-            <div class="qty-area"
-                 style="display:flex; align-items:center; gap:8px;">
-
-                <button class="qty-btn"
-                        aria-label="数量を減らす"
-                        ${qty[i] == 0 ? 'disabled' : ''}
-                        onclick="chg(${i},-1)">
-                    −
-                </button>
-
-
-                <div class="qty-val ${
-                    qty[i] == 0
-                    ? 'qty-zero'
-                    : 'qty-active'
-                }">
-                    ${qty[i]}
-                </div>
-
-
-                <button class="qty-btn"
-                        aria-label="数量を増やす"
-                        ${qty[i] >= it[2] ? 'disabled' : ''}
-                        onclick="chg(${i},1)">
-                    ＋
-                </button>
-
-            </div>
-
-        </div>
-        `;
-
-
-        listEl.appendChild(d);
-
-    });
-
-
-
-    // 表示対象が0件の場合
-    if (filterEl.checked && visibleCount === 0) {
-
-        listEl.innerHTML =
-            '<div class="empty-message">商品が選択されていません</div>';
-
-    }
-
-
-
-    let t =
-        Math.floor(target / 15000);
-
-    let next =
-        15000 - target % 15000;
-
-
-    if (target > 0 && target % 15000 === 0) {
-        next = 15000;
-    }
-
-
-
-    document.getElementById("bar-left-content").innerHTML =
-
-    `
-    <div class=info-row>
-        <div class=info-label>
-            <span class=label-text>🎁 購入特典</span>
-            <span class=colon>：</span>
-        </div>
-        <span class="val-text" style="white-space:nowrap">
-            ${t}セット
-        </span>
-    </div>
-
-
-    <div class=info-row>
-        <div class=info-label>
-            <span class=label-text>✨️ 次の特典まであと</span>
-            <span class=colon>：</span>
-        </div>
-        <span class="val-text" style="white-space:nowrap">
-            ¥${next.toLocaleString()}
-        </span>
-    </div>
-    `;
-
-
-    document.getElementById("total-val-content").innerText =
-        fmt(total);
-
-}
-function chg(i, d) {
-
-    qty[i] =
-        Math.max(
-            0,
-            Math.min(
-                items[i][2],
-                qty[i] + d
-            )
-        );
-
-
-    localStorage.setItem(
-        "goodsQty",
-        JSON.stringify(qty)
-    );
-
-
-    draw();
-
-
-    requestAnimationFrame(() => {
-
-        requestAnimationFrame(() => {
-
-            const vals =
-                document.querySelectorAll(".qty-val");
-
-
-            if (vals[i]) {
-
-                vals[i].classList.add("qty-pop");
-
-
-                setTimeout(() => {
-
-                    vals[i].classList.remove("qty-pop");
-
-                }, 150);
-
-            }
-
-        });
-
-    });
-
-}
-
-
-
-function resetAll() {
-
-    qty.fill(0);
-
-
-    localStorage.removeItem(
-        "goodsQty"
-    );
-
-
-    draw();
-
-
-    requestAnimationFrame(() => {
-
-        requestAnimationFrame(() => {
-
-            document
-            .querySelectorAll(".qty-val")
-            .forEach(v => {
-
-                v.classList.add("qty-pop");
-
-
-                setTimeout(() => {
-
-                    v.classList.remove("qty-pop");
-
-                }, 150);
-
             });
-
         });
+    }
 
-    });
+    function resetAll() {
+        qty.fill(0);
+        localStorage.removeItem("goodsQty");
+        draw();
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+                document.querySelectorAll(".qty-val").forEach(v => {
+                    v.classList.add("qty-pop");
+                    setTimeout(() => v.classList.remove("qty-pop"), 150);
+                });
+            });
+        });
+    }
 
-}
-
-
-
-// トグルは保存しない
-// ページを閉じたらOFFに戻る
-document
-.getElementById("filter")
-.addEventListener(
-    "change",
-    draw
-);
-
-
-
-draw();
-
+    document.getElementById("filter").addEventListener("change", draw);
+    draw();
 </script>
 </body>
 </html>
